@@ -1,0 +1,36 @@
+#!/bin/bash
+
+FECHA=$(date)
+FECHA_=$(date +%F)
+FICHERO_LOG=~/.tostado.log
+LIMITE=365475
+#DEV=1,3,0
+#FIFO=31M
+#SPEED=16
+OPTS="driveropts=burnfree -overburn -dao -v -eject -pad gracetime=2"
+AVI=$1
+if [ -z "$1" ]; then
+	echo "Uso: $0 iso_a_tostar"
+	exit
+fi
+if [ ! -f "$1" ]; then
+	echo El archivo especificado $1  no existe
+fi
+PELICULA=$AVI
+PELICULA=`echo ${PELICULA} | sed s/.avi/""/g`
+PELICULA=`echo ${PELICULA} | sed s/.divx/""/g`
+PELICULA=`echo ${PELICULA} | sed s/.asf/""/g`
+
+VOL_ID=`echo "${PELICULA}" | cut -b -32 -`
+
+TAMANO=`mkisofs  -r -J -jcharset default -l -D -L  --print-size  -V "${VOL_ID}" -P "" -p "" -abstract "" -biblio "" -copyright ""   -graft-points "/=/$(pwd)/${AVI}"`
+if [ $TAMANO -gt $LIMITE ]; then
+	echo "Demasiado grande para caber en un cd: $TAMANO, maximo $LIMITE"
+	exit
+fi
+MEGAS=`echo $TAMANO/512 | bc`
+echo $MEGAS
+`mkisofs  -r -J -jcharset default -l -D -L  -V "${VOL_ID}" -P "" -p "" -abstract "" -biblio "" -copyright ""   -graft-points "/=/$(pwd)/${AVI}" 2>/dev/null | cdrecord $OPTS tsize=${TAMANO}s - 1>&2`
+RETVAL=$?
+[ $RETVAL -eq 0 ] && echo "$FECHA - $1" >> $FICHERO_LOG
+

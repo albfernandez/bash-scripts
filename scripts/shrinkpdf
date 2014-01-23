@@ -1,0 +1,26 @@
+#!/bin/sh
+# Based on http://www.alfredklomp.com/programming/shrinkpdf/
+
+if [ $# -lt 2 ]; then
+	echo "Es necesario introducir al menos 2 parámetros: $0 input outuput [imageresolution]"
+	exit 1
+fi
+IMAGE_RESOLUTION=72
+if [ $# -eq 3 ]; then
+	IMAGE_RESOLUTION=$3
+fi
+
+gs	-q -dNOPAUSE -dBATCH -dSAFER \
+	-sDEVICE=pdfwrite \
+	-dCompatibilityLevel=1.5 \
+	-dPDFSETTINGS=/screen \
+	-dEmbedAllFonts=true \
+	-dSubsetFonts=true \
+	-dColorImageDownsampleType=/Bicubic \
+	-dColorImageResolution=$IMAGE_RESOLUTION \
+	-dGrayImageDownsampleType=/Bicubic \
+	-dGrayImageResolution=$IMAGE_RESOLUTION \
+	-dMonoImageDownsampleType=/Bicubic \
+	-dMonoImageResolution=$IMAGE_RESOLUTION \
+	-sOutputFile=$2 \
+	 $1

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+LIMITE_SIN=359849
+LIMITE_CON=365475
+FECHA=$(date)
+FICHERO_LOG=~/.tostado.log
+OPTS="driveropts=burnfree  -immed -dao -overburn -v -eject gracetime=2"
+if [ -z "$1" ] ; then
+	echo "Uso: $0 iso_a_tostar"
+	exit
+fi
+if [ ! -f "$1" ] ; then
+	echo "El archivo especificado $1 no existe"
+	exit
+fi
+
+TAMANO=`wc -c "$1" | cut -f 1 -d " "`
+TAMANO=`echo $TAMANO / 2048 | bc `
+if [ $TAMANO -gt $LIMITE_SIN ] ; then
+	OPTS+=" -overburn "
+fi
+if [ $TAMANO -gt $LIMITE_CON ] ; then
+	echo "Demasiado grande para caber en un CD"
+	exit
+fi
+cdrecord $OPTS "$1"
+RETVAL=$?
+[ $RETVAL -eq 0 ] && echo "$FECHA - $1" >> $FICHERO_LOG
+

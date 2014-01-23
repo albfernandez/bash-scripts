@@ -1,0 +1,25 @@
+#!/bin/bash
+
+FECHA=$(date)
+FECHA_=$(date +%F)
+FICHERO_LOG=~/.tostado.log
+LIMITE=365475
+DEV=""
+MKISOFS_OPTS=" -r -J -jcharset default -l -D -L -joliet-long "
+DIRECTORIO=$1
+RECORD_SPEED=16
+if [ -z "$1" ]; then
+	echo "Uso: $0 directorio_a_tostar"
+	exit
+fi
+if [ ! -d "$1" ]; then
+	echo El directorio especificado $1  no existe
+fi
+
+
+VOL_ID=`echo "${DIRECTORIO}" | cut -b -32 -`
+
+`growisofs -overburn -speed=${RECORD_SPEED} -Z /dev/hdb ${MKISOFS_OPTS} -V "${VOL_ID}" -graft-points "/=/$(pwd)/${DIRECTORIO}"`
+
+echo "$FECHA - DVD - $1" >> $FICHERO_LOG
+

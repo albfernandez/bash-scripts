@@ -1,0 +1,19 @@
+#!/bin/bash
+
+
+FECHA=$(date)
+FICHERO_LOG=~/.tostado.log
+OPTS="driveropts=burnfree  -immed -dao -overburn -v -speed=1  gracetime=2"
+if [ -z "$1" ] ; then
+	echo "Uso: $0 iso_a_tostar"
+	exit
+fi
+if [ ! -f "$1" ] ; then
+	echo "El archivo especificado $1 no existe"
+	exit
+fi
+
+growisofs  --dvd-compat -Z "/dev/hdb=$1"
+RETVAL=$?
+[ $RETVAL -eq 0 ] && echo "$FECHA - $1" >> $FICHERO_LOG
+

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+FECHA=$(date)
+FECHA_=$(date +%F)
+FICHERO_LOG=~/.tostado.log
+LIMITE=365475
+DEV=""
+OPTS="driveropts=burnfree -overburn -dao -v -eject gracetime=2"
+DIRECTORIO=$1
+if [ -z "$1" ]; then
+	echo "Uso: $0 directorio_a_tostar"
+	exit
+fi
+if [ ! -d "$1" ]; then
+	echo El directorio especificado $1  no existe
+fi
+
+
+VOL_ID=`echo "${DIRECTORIO}" | cut -b -32 -`
+
+TAMANO=`mkisofs  -r -J -jcharset default -l -D -L -z  --print-size  -V "${VOL_ID}" -P "" -p "" -abstract "" -biblio "" -copyright ""   -graft-points "/=/$(pwd)/${DIRECTORIO}"`
+if [ $TAMANO -gt $LIMITE ]; then
+	echo "Demasiado grande para caber en un cd: $TAMANO, maximo $LIMITE"
+	exit
+fi
+`mkisofs  -r -J -jcharset default -l -D -L  -z -V "${VOL_ID}" -P "" -p "" -abstract "" -biblio "" -copyright ""   -graft-points "/=/$(pwd)/${DIRECTORIO}" 2>/dev/null | cdrecord $DEV $OPTS tsize=${TAMANO}s - 1>&2`
+RETVAL=$?
+[ $RETVAL -eq 0 ] && echo "$FECHA - $1" >> $FICHERO_LOG
