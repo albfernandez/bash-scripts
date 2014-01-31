@@ -1,0 +1,7 @@
+#!/bin/sh
+# TODO Comprobar parametros
+# Que al menos se indique $1
+# recibir como $2 la opcion de borrado
+# Comprobar que no se sobreescriben ficheros
+
+gpsbabel -i skytraq,erase -f /dev/ttyACM0 -x track,fix=3d -o gpx -F $1.gpx -o kml,units=m -F $1.kml -o nmea -F $1.txt
