@@ -1,7 +1,26 @@
 #!/bin/sh
-# TODO Comprobar parametros
-# Que al menos se indique $1
-# recibir como $2 la opcion de borrado
-# Comprobar que no se sobreescriben ficheros
 
-gpsbabel -i skytraq,erase -f /dev/ttyACM0 -x track,fix=3d -o gpx -F $1.gpx -o kml,units=m -F $1.kml -o nmea -F $1.txt
+ERASE=",erase"
+
+if [ -z "$1" ] ; then
+	echo "Uso: $0 nombreFichero"
+	exit
+fi
+
+if [ -f "$1.txt" ]; then
+	echo "El fichero $1.txt ya existe"
+	exit
+fi
+
+
+if [ -n "$2" ] && [ "$2" != "keep" ] && [ "$2" != "erase" ] ; then
+	echo "Second parameter must be keep or erase"
+	exit
+fi
+
+if [ "$2" == 'keep' ] ; then
+	ERASE=""
+fi
+
+
+gpsbabel -i skytraq$ERASE -f /dev/ttyACM0 -x track,fix=3d -o gpx -F $1.gpx -o kml,units=m -F $1.kml -o nmea -F $1.txt
