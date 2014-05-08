@@ -20,4 +20,4 @@ rm -f divx2pass.log frameno.avi
 mencoder dvd://$2 -dvd-device "$1" -alang es -ovc xvid -xvidencopts bvhq=1:chroma_opt:quant_type=mpeg:bitrate=$3:pass=1 -oac copy -o /dev/null
 
 #pass 2, compress audio 128
-mencoder dvd://$2 -dvd-device "$1" -ovc xvid -xvidencopts bvhq=1:chroma_opt:quant_type=mpeg:bitrate=$3:pass=2 -alang es -oac mp3lame -lameopts br=128:cbr:vol=6 -o $4
+mencoder dvd://$2 -dvd-device "$1" -ovc xvid -xvidencopts bvhq=1:chroma_opt:quant_type=mpeg:bitrate=$3:pass=2 -alang es -oac mp3lame -lameopts br=128:cbr -o $4
