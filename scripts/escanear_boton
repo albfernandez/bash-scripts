@@ -1,0 +1,3 @@
+#!/bin/sh
+
+scanadf -d epson2:/dev/sg0 --resolution 300 --mode Gray  --wait-for-button yes
