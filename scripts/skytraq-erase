@@ -1,0 +1,3 @@
+#!/bin/sh
+
+gpsbabel -i skytraq,erase -f /dev/ttyACM0 -o gpx -F /dev/null
