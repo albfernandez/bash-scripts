@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ $# -ne 2 ]; then
+    echo "Es necesario introducir 2 parámetros: $0 input outuput"
+    exit 1
+fi
+
+
+# Comprobar que los archivos existen
+
+convert -threshold 80% -fill white -stroke white \
+ -draw "rectangle 0,3440 2544,3508" \
+ -draw "rectangle 0,0 2544,60" \
+ -draw "rectangle 0,0 60,3508" \
+ -draw "rectangle 2490,0 2544,3508" \
+ $1 $2 
