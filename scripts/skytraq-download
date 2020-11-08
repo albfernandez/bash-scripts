@@ -1,0 +1,20 @@
+#!/bin/sh
+
+if [ -z "$1" ] ; then
+	echo "Uso: $0 nombreFichero"
+	exit
+fi
+
+if [ -f "$1.txt" ]; then
+	echo "El fichero $1.txt ya existe"
+	exit
+fi
+
+
+if [ -n "$2" ] && [ "$2" != "keep" ] && [ "$2" != "erase" ] ; then
+	echo "Second parameter must be keep or erase"
+	exit
+fi
+
+
+gpsbabel -i skytraq -x track,fix=3d -f /dev/ttyACM0 -o gpx -F $1.gpx -o kml,units=m -F $1.kml -o nmea -F $1.txt
